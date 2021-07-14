@@ -1,6 +1,6 @@
 /// <reference types="node" />
 
-import { FastifyPlugin } from "fastify";
+import { FastifyPluginCallback } from "fastify";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -12,7 +12,7 @@ declare module "fastify" {
     destroySession(callback: (err?: Error) => void): void;
   }
 
-  interface Session extends Record<string, any> {
+  interface Session {
     sessionId: string;
     encryptedSessionId: string;
     /** Updates the `expires` property of the session. */
@@ -85,6 +85,7 @@ declare namespace FastifySessionPlugin {
 }
 
 export class MemoryStore implements FastifySessionPlugin.SessionStore {
+  constructor(map?: Map<string, any>);
   set(sessionId: string, session: any, callback: (err?: Error) => void): void;
   get(
     sessionId: string,
@@ -92,7 +93,8 @@ export class MemoryStore implements FastifySessionPlugin.SessionStore {
   ): void;
   destroy(sessionId: string, callback: (err?: Error) => void): void;
 }
+export const Store: MemoryStore;
 
-declare const FastifySessionPlugin: FastifyPlugin<FastifySessionPlugin.Options>;
+declare const FastifySessionPlugin: FastifyPluginCallback<FastifySessionPlugin.Options>;
 
 export default FastifySessionPlugin;
